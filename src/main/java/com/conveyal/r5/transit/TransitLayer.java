@@ -168,7 +168,7 @@ public class TransitLayer implements Serializable, Cloneable {
     /** Whether to save detailed trip shapes from GTFS (e.g., for Conveyal Taui sites). Unless the default false
      * value is overwritten by a transportNetworkConfig file, straight line segments between stops will be used in
      * visualiations.*/
-    public transient boolean saveShapes = false;
+    public boolean saveShapes = false;
 
     /** Map from feed ID to feed CRC32 to ensure that we can't apply scenarios to the wrong feeds */
     public Map<String, Long> feedChecksums = new HashMap<>();
@@ -184,7 +184,8 @@ public class TransitLayer implements Serializable, Cloneable {
     public String scenarioId;
 
     public TransitLayer () {
-        // Default constructor
+        // Default constructor. Does not exist implicitly when one-arg constructor is present.
+        // Necessary to ensure fields with initializer expressions are initialized upon deserialization.
     }
 
     public TransitLayer (TransportNetworkConfig config) {
