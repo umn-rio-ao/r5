@@ -93,7 +93,7 @@ public class EdgeStore implements Serializable {
     public TIntList flags;
 
     /** PLTS values for every edge. */
-    public TShortList pltsValues;
+    public TByteList pltsValues;
 
     /**
      * CAR speeds, one speed for each edge. Separate entries for forward and backward edges.
@@ -214,7 +214,7 @@ public class EdgeStore implements Serializable {
         // There are separate flags and speeds entries for the forward and backward edges in each pair.
         flags = new TIntArrayList(initialSize);
         speeds = new TShortArrayList(initialSize);
-        pltsValues = new TShortArrayList(initialSize);
+        pltsValues = new TByteArrayList(initialSize);
         // Vertex indices, geometries, and lengths are shared between pairs of forward and backward edges.
         int initialEdgePairs = initialSize / 2;
         fromVertices = new TIntArrayList(initialEdgePairs);
@@ -373,13 +373,13 @@ public class EdgeStore implements Serializable {
         // No speed or flags are set, they must be set afterward using the edge cursor.
         speeds.add(DEFAULT_SPEED_KPH);
         flags.add(0);
-        pltsValues.add(Short.MAX_VALUE);
+        pltsValues.add(Byte.MAX_VALUE);
 
         // Backward edge.
         // No speed or flags are set, they must be set afterward using the edge cursor.
         speeds.add(DEFAULT_SPEED_KPH);
         flags.add(0);
-        pltsValues.add(Short.MAX_VALUE);
+        pltsValues.add(Byte.MAX_VALUE);
 
         if (edgeTraversalTimes != null) {
             edgeTraversalTimes.addOneNeutralEdge();
@@ -532,7 +532,7 @@ public class EdgeStore implements Serializable {
             return speeds.get(edgeIndex);
         }
 
-        public short getPLTS() {
+        public byte getPLTS() {
             return pltsValues.get(edgeIndex);
         }
 
@@ -558,7 +558,7 @@ public class EdgeStore implements Serializable {
             speeds.set(edgeIndex, speed);
         }
 
-        public void setPLTS(short plts) {
+        public void setPLTS(byte plts) {
             pltsValues.set(edgeIndex, plts);
         }
 

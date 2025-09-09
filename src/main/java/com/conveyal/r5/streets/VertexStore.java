@@ -61,7 +61,7 @@ public class VertexStore implements Serializable {
         fixedLats.add(fixedLat);
         fixedLons.add(fixedLon);
         vertexFlags.add((byte)0);
-        pltsValues.add(Short.MAX_VALUE);
+        pltsValues.add(Byte.MAX_VALUE);
         return vertexIndex;
     }
 
@@ -96,7 +96,7 @@ public class VertexStore implements Serializable {
             fixedLons.set(index, (int) (lon * FIXED_FACTOR));
         }
 
-        public void setPLTS(short plts) {
+        public void setPLTS(byte plts) {
             pltsValues.set(index, plts);
         }
 
@@ -124,7 +124,7 @@ public class VertexStore implements Serializable {
             return fixedLons.get(index);
         }
 
-        public short getPLTS() {
+        public byte getPLTS() {
             return pltsValues.get(index);
         }
 
