@@ -33,11 +33,13 @@ public class VertexStore implements Serializable {
     public TIntList fixedLats;
     public TIntList fixedLons;
     public TByteList vertexFlags;
+    public TByteList pltsValues;
 
     public VertexStore (int initialSize) {
         fixedLats = new TIntArrayList(initialSize);
         fixedLons = new TIntArrayList(initialSize);
         vertexFlags = new TByteArrayList(initialSize);
+        pltsValues = new TByteArrayList(initialSize);
     }
 
     /**
@@ -59,6 +61,7 @@ public class VertexStore implements Serializable {
         fixedLats.add(fixedLat);
         fixedLons.add(fixedLon);
         vertexFlags.add((byte)0);
+        pltsValues.add(Short.MAX_VALUE);
         return vertexIndex;
     }
 
@@ -93,6 +96,10 @@ public class VertexStore implements Serializable {
             fixedLons.set(index, (int) (lon * FIXED_FACTOR));
         }
 
+        public void setPLTS(short plts) {
+            pltsValues.set(index, plts);
+        }
+
         public boolean getFlag(VertexFlag flag) {
             return VertexStore.this.getFlag(index, flag);
         }
@@ -115,6 +122,10 @@ public class VertexStore implements Serializable {
 
         public int getFixedLon() {
             return fixedLons.get(index);
+        }
+
+        public short getPLTS() {
+            return pltsValues.get(index);
         }
 
         public Point getJTSPointFloating () {
