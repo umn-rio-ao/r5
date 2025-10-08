@@ -673,12 +673,15 @@ public class EdgeStore implements Serializable {
                 return null;
             }
 
-            // Check whether this edge allows the selected mode, considering the request settings.
+// Check whether this edge allows the selected mode, considering the request settings.
             if (streetMode == StreetMode.WALK) {
                 if (!getFlag(EdgeFlag.ALLOWS_PEDESTRIAN)) {
                     return null;
                 }
                 if (req.wheelchair && !getFlag(EdgeFlag.ALLOWS_WHEELCHAIR)) {
+                    return null;
+                }
+                if (this.getPLTS() > req.pedTrafficStress) {
                     return null;
                 }
             } else if (streetMode == StreetMode.BICYCLE) {
@@ -691,6 +694,9 @@ public class EdgeStore implements Serializable {
                 }
                 if (tryWalking) {
                     if (!getFlag(EdgeFlag.ALLOWS_PEDESTRIAN)) {
+                        return null;
+                    }
+                    if (this.getPLTS() > req.pedTrafficStress) {
                         return null;
                     }
                     streetMode = StreetMode.WALK;
