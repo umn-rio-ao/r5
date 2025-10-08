@@ -11,6 +11,7 @@ import com.conveyal.r5.util.TIntObjectHashMultimap;
 import com.conveyal.r5.util.TIntObjectMultimap;
 import gnu.trove.iterator.TIntIterator;
 import gnu.trove.list.TIntList;
+import gnu.trove.list.array.TIntArrayList;
 import gnu.trove.map.TIntIntMap;
 import gnu.trove.map.TIntObjectMap;
 import gnu.trove.map.hash.TIntIntHashMap;
@@ -589,11 +590,8 @@ public class StreetRouter {
             TIntList edgeList;
             // For pedestrian routing, allow vertex PLTS value to prevent further routing.
             // If PLTS limit is exceeded, pretend there are no outgoing edges from the current state vertex.
-            if (s0.streetMode == StreetMode.WALK) {
-                Vertex v = VertexStore.Vertex(s0.vertex);
-                if (v.getPLTS() > profileRequest.pedTrafficStress) {
-                    edgeList = new TIntArrayList(4);
-                }
+            if ((s0.streetMode == StreetMode.WALK) && (streetLayer.vertexStore.getCursor(s0.vertex).getPLTS() > profileRequest.pedTrafficStress)) {
+                    edgeList = new TIntArrayList();
             } else {
                 if (profileRequest.reverseSearch) {
                     edgeList = streetLayer.incomingEdges.get(s0.vertex);
