@@ -1201,10 +1201,12 @@ public class StreetLayer implements Serializable, Cloneable {
         // Now set characteristics that differ in the forward and backward directions.
         newEdge.setFlags(forwardFlags);
         newEdge.setSpeed(forwardSpeed);
+        pltsLabeler.label(way, newEdge);
         // Step ahead to the backward edge in the same pair.
         newEdge.advance();
         newEdge.setFlags(backFlags);
         newEdge.setSpeed(backwardSpeed);
+        pltsLabeler.label(way, newEdge);
 
     }
 
