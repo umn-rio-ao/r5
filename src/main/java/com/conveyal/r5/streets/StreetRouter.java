@@ -587,10 +587,19 @@ public class StreetRouter {
             }
 
             TIntList edgeList;
-            if (profileRequest.reverseSearch) {
-                edgeList = streetLayer.incomingEdges.get(s0.vertex);
+            // For pedestrian routing, allow vertex PLTS value to prevent further routing.
+            // If PLTS limit is exceeded, pretend there are no outgoing edges from the current state vertex.
+            if (s0.streetMode == StreetMode.WALK) {
+                Vertex v = VertexStore.Vertex(s0.vertex);
+                if (v.getPLTS() > profileRequest.pedTrafficStress) {
+                    edgeList = new TIntArrayList(4);
+                }
             } else {
-                edgeList = streetLayer.outgoingEdges.get(s0.vertex);
+                if (profileRequest.reverseSearch) {
+                    edgeList = streetLayer.incomingEdges.get(s0.vertex);
+                } else {
+                    edgeList = streetLayer.outgoingEdges.get(s0.vertex);
+                }
             }
             // explore edges leaving this vertex
             edgeList.forEach(eidx -> {
