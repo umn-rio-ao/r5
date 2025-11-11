@@ -11,6 +11,7 @@ import com.conveyal.r5.api.util.BikeRentalStation;
 import com.conveyal.r5.api.util.ParkRideParking;
 import com.conveyal.r5.common.GeometryUtils;
 import com.conveyal.r5.labeling.LevelOfTrafficStressLabeler;
+import com.conveyal.r5.labeling.PLTSLabeler;
 import com.conveyal.r5.labeling.RoadPermission;
 import com.conveyal.r5.labeling.SpeedLabeler;
 import com.conveyal.r5.labeling.StreetClass;
@@ -138,6 +139,8 @@ public class StreetLayer implements Serializable, Cloneable {
     private transient LevelOfTrafficStressLabeler stressLabeler = new LevelOfTrafficStressLabeler();
     private transient TypeOfEdgeLabeler typeOfEdgeLabeler = new TypeOfEdgeLabeler();
     private transient SpeedLabeler speedLabeler;
+    public transient PLTSLabeler pltsLabeler;
+
     // private transient TraversalTimeLabeler traversalTimeLabeler;
     // This is only used when loading from OSM, and is then nulled to save memory.
     transient OSM osm;
@@ -1045,6 +1048,7 @@ public class StreetLayer implements Serializable, Cloneable {
                     vertexStore.setFlag(vertexIndex, IMPASSABLE);
                 }
                 vertexIndexForOsmNode.put(osmNodeId, vertexIndex);
+                pltsLabeler.label(node, vertexStore.getCursor(vertexIndex));
             }
         }
         return vertexIndex;
@@ -1197,10 +1201,12 @@ public class StreetLayer implements Serializable, Cloneable {
         // Now set characteristics that differ in the forward and backward directions.
         newEdge.setFlags(forwardFlags);
         newEdge.setSpeed(forwardSpeed);
+        pltsLabeler.label(way, newEdge);
         // Step ahead to the backward edge in the same pair.
         newEdge.advance();
         newEdge.setFlags(backFlags);
         newEdge.setSpeed(backwardSpeed);
+        pltsLabeler.label(way, newEdge);
 
     }
 
