@@ -139,7 +139,7 @@ public class StreetLayer implements Serializable, Cloneable {
     private transient LevelOfTrafficStressLabeler stressLabeler = new LevelOfTrafficStressLabeler();
     private transient TypeOfEdgeLabeler typeOfEdgeLabeler = new TypeOfEdgeLabeler();
     private transient SpeedLabeler speedLabeler;
-    public transient PLTSLabeler pltsLabeler;
+    public transient PLTSLabeler pltsLabeler = new PLTSLabeler();
 
     // private transient TraversalTimeLabeler traversalTimeLabeler;
     // This is only used when loading from OSM, and is then nulled to save memory.
