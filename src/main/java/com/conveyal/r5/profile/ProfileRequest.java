@@ -72,6 +72,9 @@ public class ProfileRequest implements Serializable, Cloneable {
 
     /** maximum level of traffic stress for cycling, 1 - 4 */
     public int bikeTrafficStress = 4;
+
+    /** maximum level of stress for walking */
+    public int pedTrafficStress = 4;
     
     /** The speed of driving, in meters per second. Roads from OSM use the speed limit; this is the speed used when
      * linking the street network to a pointset (i.e. it is applied between the true origin and the first street

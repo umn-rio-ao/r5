@@ -92,6 +92,9 @@ public class EdgeStore implements Serializable {
     /** Boolean flags for every edge. Separate entries for forward and backward edges. */
     public TIntList flags;
 
+    /** PLTS values for every edge. */
+    public TByteList pltsValues;
+
     /**
      * CAR speeds, one speed for each edge. Separate entries for forward and backward edges.
      * rounded (m/s * 100) (2 decimal places)
@@ -211,6 +214,7 @@ public class EdgeStore implements Serializable {
         // There are separate flags and speeds entries for the forward and backward edges in each pair.
         flags = new TIntArrayList(initialSize);
         speeds = new TShortArrayList(initialSize);
+        pltsValues = new TByteArrayList(initialSize);
         // Vertex indices, geometries, and lengths are shared between pairs of forward and backward edges.
         int initialEdgePairs = initialSize / 2;
         fromVertices = new TIntArrayList(initialEdgePairs);
@@ -369,11 +373,13 @@ public class EdgeStore implements Serializable {
         // No speed or flags are set, they must be set afterward using the edge cursor.
         speeds.add(DEFAULT_SPEED_KPH);
         flags.add(0);
+        pltsValues.add(Byte.MAX_VALUE);
 
         // Backward edge.
         // No speed or flags are set, they must be set afterward using the edge cursor.
         speeds.add(DEFAULT_SPEED_KPH);
         flags.add(0);
+        pltsValues.add(Byte.MAX_VALUE);
 
         if (edgeTraversalTimes != null) {
             edgeTraversalTimes.addOneNeutralEdge();
@@ -526,6 +532,10 @@ public class EdgeStore implements Serializable {
             return speeds.get(edgeIndex);
         }
 
+        public byte getPLTS() {
+            return pltsValues.get(edgeIndex);
+        }
+
         /**
          * @return the car speed on this edge, taking live traffic updates into account if requested (though that's not
          * yet implemented)
@@ -546,6 +556,10 @@ public class EdgeStore implements Serializable {
         /** Note, this is expecting weird units and should be hidden. Use setSpeedKph. */
         public void setSpeed(short speed) {
             speeds.set(edgeIndex, speed);
+        }
+
+        public void setPLTS(byte plts) {
+            pltsValues.set(edgeIndex, plts);
         }
 
         public int getLengthMm () {
@@ -659,12 +673,15 @@ public class EdgeStore implements Serializable {
                 return null;
             }
 
-            // Check whether this edge allows the selected mode, considering the request settings.
+// Check whether this edge allows the selected mode, considering the request settings.
             if (streetMode == StreetMode.WALK) {
                 if (!getFlag(EdgeFlag.ALLOWS_PEDESTRIAN)) {
                     return null;
                 }
                 if (req.wheelchair && !getFlag(EdgeFlag.ALLOWS_WHEELCHAIR)) {
+                    return null;
+                }
+                if (this.getPLTS() > req.pedTrafficStress) {
                     return null;
                 }
             } else if (streetMode == StreetMode.BICYCLE) {
@@ -677,6 +694,9 @@ public class EdgeStore implements Serializable {
                 }
                 if (tryWalking) {
                     if (!getFlag(EdgeFlag.ALLOWS_PEDESTRIAN)) {
+                        return null;
+                    }
+                    if (this.getPLTS() > req.pedTrafficStress) {
                         return null;
                     }
                     streetMode = StreetMode.WALK;
